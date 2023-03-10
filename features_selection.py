@@ -74,7 +74,7 @@ def lasso_feature_selection(X_train, y_train, number_of_states = 5, test_size = 
 
     for regularization in tqdm(lasso_parameters['regularization']):
         l1_lasso_model = model.CustomLinearModel(regularization=regularization, alpha= 1.2, optim = 'BFGS')
-        score = model.evaluate_model_by_country(X_train, y_train, l1_lasso_model, stratify = X_train['COUNTRY_split'],  state = 5, test_size=0.3)
+        score = model.evaluate_model_by_country(X_train, y_train, l1_lasso_model, stratify = X_train['COUNTRY_split'],  number_of_states = number_of_states, test_size=test_size)
         features = list(zip(X_train.columns[:-1],l1_lasso_model.coef_))
         #features to keep
         keep = []
@@ -149,7 +149,7 @@ def laplace_features_selection(X_train, y_train, X_test, number_of_states = 5, t
     score = dict(zip(X.columns,lap_score.lap_score(np.array(X), W=W)))
     score = dict(sorted(score.items(), key=lambda x: x[1]))
 
-    max_features = min(max_features,X.shape[1])
+    max_features = min(max_features, X.shape[1])
     list_features = list(score.keys())[:max_features]
     list_scores = list(score.values())[:max_features]
 
