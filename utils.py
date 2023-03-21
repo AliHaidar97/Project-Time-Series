@@ -53,15 +53,15 @@ def remove_features(all_data_clean):
     
     return all_data_clean
 
-def add_clusters(k, all_data_clean,cols,c):
+def add_clusters(k, all_data_clean, cols , c, one_hot = 0):
     
-    X_season = all_data_clean[cols]
+    X = all_data_clean[cols]
     #all_data_clean = all_data_clean.drop(cols,axis=1)
-    kmeans = KMeans(n_clusters=k,random_state = 0).fit(np.array(X_season))
-    all_data_clean[c] = kmeans.predict(np.array(X_season))
-    all_data_clean = pd.get_dummies(all_data_clean, columns=[c])
+    kmeans = KMeans(n_clusters=k,random_state = 0).fit(np.array(X))
+    all_data_clean[c] = kmeans.predict(np.array(X)) + 1
+    if(one_hot == 1):
+        all_data_clean = pd.get_dummies(all_data_clean, columns=[c])
     return all_data_clean
-
 
 def replace_outliers(all_data_clean, cols, threshold = 3):
     for c in cols :
@@ -107,14 +107,14 @@ def add_new_features(all_data_clean):
     #all_data_clean = add_clusters(4,all_data_clean,cols,'season')
     
     
-    #all_data_clean["FR_PRODUCTION"] = all_data_clean['FR_GAS'] + all_data_clean['FR_COAL'] + all_data_clean['FR_HYDRO'] + all_data_clean['FR_NUCLEAR'] + all_data_clean['FR_SOLAR'] + all_data_clean['FR_WINDPOW']
-    #all_data_clean["DE_PRODUCTION"] = all_data_clean['DE_GAS'] + all_data_clean['DE_COAL'] + all_data_clean['DE_HYDRO'] + all_data_clean['DE_NUCLEAR'] + all_data_clean['DE_SOLAR'] + all_data_clean['DE_WINDPOW'] + all_data_clean['DE_LIGNITE']
+    all_data_clean["FR_PRODUCTION"] = all_data_clean['FR_GAS'] + all_data_clean['FR_COAL'] + all_data_clean['FR_HYDRO'] + all_data_clean['FR_NUCLEAR'] + all_data_clean['FR_SOLAR'] + all_data_clean['FR_WINDPOW']
+    all_data_clean["DE_PRODUCTION"] = all_data_clean['DE_GAS'] + all_data_clean['DE_COAL'] + all_data_clean['DE_HYDRO'] + all_data_clean['DE_NUCLEAR'] + all_data_clean['DE_SOLAR'] + all_data_clean['DE_WINDPOW'] + all_data_clean['DE_LIGNITE']
 
-    #all_data_clean['FR_NEED'] = all_data_clean["FR_CONSUMPTION"] - all_data_clean['FR_PRODUCTION']  
-    #all_data_clean['DE_NEED'] = all_data_clean["DE_CONSUMPTION"] - all_data_clean['DE_PRODUCTION'] 
+    all_data_clean['FR_NEED'] = all_data_clean["FR_CONSUMPTION"] - all_data_clean['FR_PRODUCTION']  
+    all_data_clean['DE_NEED'] = all_data_clean["DE_CONSUMPTION"] - all_data_clean['DE_PRODUCTION'] 
 
-    #all_data_clean['FR_NEED_RATIO'] =   all_data_clean['FR_NEED'] / all_data_clean["FR_PRODUCTION"]
-    #all_data_clean['DE_NEED_RATIO'] =  all_data_clean['DE_NEED'] / all_data_clean["DE_PRODUCTION"] 
+    all_data_clean['FR_NEED_RATIO'] =   all_data_clean['FR_NEED'] / all_data_clean["FR_PRODUCTION"]
+    all_data_clean['DE_NEED_RATIO'] =  all_data_clean['DE_NEED'] / all_data_clean["DE_PRODUCTION"] 
 
     
     return all_data_clean
