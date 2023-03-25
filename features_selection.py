@@ -1,9 +1,9 @@
 import pandas as pd 
 import numpy as np 
-import CustomLassoModel 
-import utils
+import CustomLassoModel  
+import utils  
 import matplotlib.pyplot as plt
-from tqdm import tqdm
+from tqdm import tqdm  
 from skfeature.function.similarity_based import lap_score
 from skfeature.utility import construct_W
 from sklearn.linear_model import LinearRegression
@@ -14,8 +14,8 @@ from skfeature.function.similarity_based import fisher_score
 from skfeature.function.information_theoretical_based import MRMR
 from skfeature.function.information_theoretical_based import CIFE
 from sklearn.feature_selection import SequentialFeatureSelector
-from sklearn.metrics import make_scorer
-import evaluation
+from sklearn.metrics import make_scorer  
+import evaluation  
 
 def evaluate_model_features(X_train , y_train, model, stratify,  list_features, list_scores, number_of_states = 5, test_size = 0.3, name = '-', plot = True, metric = evaluation.corr_spearman):
     
@@ -353,9 +353,9 @@ def sequential_features_selection(X_train, y_train, models, stratify, number_of_
     return best_score, best_features 
         
         
-def greedy_features_selection(X_train, y_train, models, stratify, threshold = 0.005, number_of_states = 5, test_size = 0.3, max_features = 32,  metric = evaluation.corr_spearman):
+def greedy_features_selection(X_train, y_train, models, stratify, threshold = 0.005, number_of_states = 5, test_size = 0.3, metric = evaluation.corr_spearman):
 
-    max_features = max(max_features, X_train.shape[1])
+    max_features =  X_train.shape[1]
     
     best_score = [] 
     best_features = []
@@ -385,17 +385,20 @@ def greedy_features_selection(X_train, y_train, models, stratify, threshold = 0.
                     best_curr = score
                     number_features.append(len(features_selected))
                     
-        
+        test_score = np.array(test_score)
         #plot the accuracy vs the regularization
         plt.figure(figsize=(20, 7))
         plt.subplot(1,2,1)
-        plt.plot(number_features, test_score, label = 'test_score')
+        if(test_score.ndim == 2):
+            plt.plot(number_features, test_score[:,0], label = 'test_score')
+        else:
+            plt.plot(number_features, test_score, label = 'test_score')
 
         plt.xlabel('number of features')
         plt.ylabel('Spearman Correlation')
         plt.legend()
         plt.plot()
-        test_score = np.array(test_score)
+        
         if(test_score.ndim == 2):
             best_score_idx = np.argmax(test_score[:,0])
         else:

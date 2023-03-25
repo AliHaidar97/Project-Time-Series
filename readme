@@ -1,1 +1,8 @@
-In this project, we tested several feature selection method on a regression data set and classification data set.
+This project aims to evaluate the performance of several feature selection methods on a regression dataset and a classification dataset. We implemented various models to assess the effectiveness of these feature selection methods. The project includes the following files:
+
+- 'features_selection_py': a module that contains all the functions of feature selection methods.
+- 'NN.py': a neural network architecture that uses soft rank.
+- 'CustomLassoModel.py': a custom Lasso model that is more robust to outliers.
+- 'evaluation.py': a module that contains the functions needed to evaluate any model on any dataset using repeated cross-validation.
+- 'Regression_main.ipynb': a notebook to test the methods and models on a regression dataset.
+- 'Classification_main.ipynb': a notebook to test the methods and models on a classification dataset.

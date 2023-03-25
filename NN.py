@@ -33,13 +33,22 @@ class Data(Dataset):
             return data
         
 
-def loss_nn(y_pred, y_true, model , lamda = 0.01, alpha = 1.2):
-    
+def loss_nn(y_pred, y_true, model, lamda=0.01, alpha=1.2):
+    # Soft rank y_pred and y_true to ensure continuous predictions and targets
     y_pred = soft_rank(y_pred.reshape(1,-1), regularization_strength=1)
-    
     y_true = soft_rank(y_true.reshape(1,-1), regularization_strength=1)
     
-    return nn.SmoothL1Loss()(y_pred,y_true)  + lamda*torch.sum(torch.abs(model.fc[4].weight)) + lamda*2*torch.sum(torch.abs(model.fc[2].weight))
+    # Compute the smooth L1 loss between y_pred and y_true
+    loss = nn.SmoothL1Loss()(y_pred, y_true)
+    
+    # Compute the L1 regularization terms for the model's weights
+    l1_reg = lamda * (torch.sum(torch.abs(model.fc[4].weight)) + 2 * torch.sum(torch.abs(model.fc[2].weight)))
+    
+    # Add the L1 regularization terms to the loss
+    loss += l1_reg
+    
+    return loss
+
 
 
 class Net(nn.Module):
@@ -56,16 +65,18 @@ class Net(nn.Module):
     def __init__(self):
         super().__init__()
     
+    
     def build(self, X_train, y_train):
         n_input = np.array(X_train).shape[1]
         n_out = 1
         self.fc = nn.Sequential(
-          nn.Linear(n_input, 50),
-          nn.Tanh(),
-          nn.Linear(50, 50),
-          nn.Tanh(),
-          nn.Linear(50, n_out)
+            nn.Linear(n_input, 50),
+            nn.Tanh(),
+            nn.Linear(50, 50),
+            nn.Tanh(),
+            nn.Linear(50, n_out)
         )
+
     
     def forward(self, x):
         x = x.to(torch.float32)
